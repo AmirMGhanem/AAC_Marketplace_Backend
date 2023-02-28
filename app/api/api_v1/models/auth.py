@@ -4,7 +4,9 @@ from app.db.base import Base
 # Pydantic
 from pydantic import BaseModel
 
-
+class UserLogin(BaseModel):
+    user_login: str
+    user_password: str
 
 class UserAuth(BaseModel):
     user_id: Optional[int]

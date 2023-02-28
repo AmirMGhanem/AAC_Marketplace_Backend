@@ -4,8 +4,6 @@ from app.db.base import Base
 # Pydantic
 from pydantic import BaseModel
 
-
-
 class UserDB(Base):
     __tablename__ = "T_user"
     user_id = Column(Integer, primary_key=True, index=True)

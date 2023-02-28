@@ -20,7 +20,7 @@ def find_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/users/", response_model=List[User])
-def find_users(db: Session = Depends(get_db)):
+def get_all_users(db: Session = Depends(get_db)):
     db_users = get_users(db)
     if db_users is None:
         raise HTTPException(status_code=404, detail="Users not found")
