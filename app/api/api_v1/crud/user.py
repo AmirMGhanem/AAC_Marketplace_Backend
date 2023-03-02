@@ -1,10 +1,12 @@
 from sqlalchemy.orm import Session
 
-from app.api.api_v1.models.user import UserDB
+from app.db.model_db import TUser
 
 def get_user(db: Session, user_id: int):
-    return db.query(UserDB).filter(UserDB.user_id == user_id).first()
+    return db.query(TUser).filter(TUser.user_id == user_id).first()
 
 def get_users(db: Session):
-    return db.query(UserDB).all()
+    return db.query(TUser).all()
+
+
 
