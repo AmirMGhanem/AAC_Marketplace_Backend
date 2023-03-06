@@ -20,6 +20,10 @@ venv
 docs.zip
 archive.zip
 /migrations/versions/
+app/.env
+
+
+
 
 
 # vim temporary files
