@@ -21,8 +21,4 @@ if so, then usev
 ****************************************************************
 
 Mongo local
-studio3t
-
-
-<!-- readme: contributors -start -->
-<!-- readme: contributors -end -->
+studio3t to create DB localy
