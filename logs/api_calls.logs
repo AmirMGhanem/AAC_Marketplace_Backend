@@ -1,0 +1,11 @@
+2023-03-08 12:14:53,834 - INFO - MIDDLEWARE - Anonymous user called http://127.0.0.1:8000/api/v1/vertical/get_all from 127.0.0.1
+2023-03-08 12:15:32,484 - INFO - MIDDLEWARE - Anonymous user called http://127.0.0.1:8000/api/v1/vertical/get_all from 127.0.0.1
+2023-03-08 12:15:34,036 - INFO - MIDDLEWARE - Anonymous user called http://127.0.0.1:8000/api/v1/vertical/get_all from 127.0.0.1
+2023-03-08 12:15:34,036 - INFO - MIDDLEWARE - Anonymous user called http://127.0.0.1:8000/api/v1/vertical/get_all from 127.0.0.1
+2023-03-08 12:15:36,779 - INFO - MIDDLEWARE - Anonymous user called http://127.0.0.1:8000/api/auth/logout from 127.0.0.1
+2023-03-08 12:15:36,779 - INFO - MIDDLEWARE - Anonymous user called http://127.0.0.1:8000/api/auth/logout from 127.0.0.1
+2023-03-08 12:15:36,779 - INFO - MIDDLEWARE - Anonymous user called http://127.0.0.1:8000/api/auth/logout from 127.0.0.1
+2023-03-08 12:15:36,783 - INFO - MIDDLEWARE - User tombrown called http://127.0.0.1:8000/api/auth/logout from 127.0.0.1
+2023-03-08 12:15:36,783 - INFO - MIDDLEWARE - User tombrown called http://127.0.0.1:8000/api/auth/logout from 127.0.0.1
+2023-03-08 12:15:36,783 - INFO - MIDDLEWARE - User tombrown called http://127.0.0.1:8000/api/auth/logout from 127.0.0.1
+2023-03-08 12:15:36,783 - INFO - MIDDLEWARE - User tombrown called http://127.0.0.1:8000/api/auth/logout from 127.0.0.1

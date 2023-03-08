@@ -4,8 +4,11 @@ from app.core.config import get_settings
 from app.db.session import engine
 from app.db.base import Base
 from fastapi.middleware.cors import CORSMiddleware
+from app.middleware.api_calls_middleware import api_calls_middleware
+
 
 import uvicorn
+
 
 
 Base.metadata.create_all(bind=engine)
@@ -28,6 +31,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# add middleware function to app
+api_calls_middleware(app)
+
+
 
 app.include_router(api_router, prefix=get_settings().API_V1_STR)
 
