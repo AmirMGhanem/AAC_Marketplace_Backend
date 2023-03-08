@@ -21,7 +21,10 @@ docs.zip
 archive.zip
 /migrations/versions/
 app/.env
-
+/logs.*
+*.logs
+/log
+/logs
 
 
 

@@ -1,8 +1,9 @@
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, JSON, String, TIMESTAMP, Table, text
 from sqlalchemy.dialects.mysql import CHAR, INTEGER, LONGTEXT, MEDIUMTEXT, TIMESTAMP, TINYINT, VARCHAR
 from sqlalchemy.orm import relationship
-from .base import Base
+from sqlalchemy.ext.declarative import declarative_base
 
+Base = declarative_base()
 metadata = Base.metadata
 
 
@@ -13,7 +14,6 @@ class TBizdev(Base):
     bizdev_id = Column(Integer, primary_key=True)
     bizdev_name = Column(VARCHAR(255))
     bizdev_enable = Column(Integer)
-    bizdev_created = Column(DateTime)
 
 
 class TCity(Base):
@@ -44,6 +44,7 @@ class TCompany(Base):
 
     company_id = Column(Integer, primary_key=True)
     company_name = Column(VARCHAR(255))
+    company_shortname = Column(String(255, 'utf8mb3_unicode_ci'))
     company_address1 = Column(VARCHAR(255))
     company_address2 = Column(VARCHAR(255))
     company_zipcode = Column(VARCHAR(255))
@@ -59,6 +60,13 @@ class TCompany(Base):
     company_bank_routing = Column(VARCHAR(255))
     company_bank_account = Column(VARCHAR(255))
     company_bank_account_type = Column(VARCHAR(255))
+    company_api_key = Column(String(255, 'utf8mb3_unicode_ci'))
+    company_api_password = Column(String(255, 'utf8mb3_unicode_ci'))
+    company_bizdev_id = Column(Integer, index=True)
+    company_test = Column(Integer, server_default=text("'0'"))
+    company_active = Column(Integer, server_default=text("'1'"))
+    company_AAC_partnerid = Column(VARCHAR(255))
+    company_AAC_numclient = Column(VARCHAR(255))
 
 
 t_T_groupcat = Table(
@@ -68,6 +76,22 @@ t_T_groupcat = Table(
     Column('groupcat_enable', TINYINT, server_default=text("'1'")),
     schema='db_marketplace'
 )
+
+
+class TLead(Base):
+    __tablename__ = 'T_lead'
+    __table_args__ = {'schema': 'db_marketplace'}
+
+    lead_id = Column(Integer, primary_key=True)
+    lead_category_id = Column(Integer, index=True)
+    lead_company_id = Column(Integer, index=True)
+    lead_contact_id = Column(Integer, index=True)
+    lead_partner_leadid = Column(VARCHAR(255))
+    lead_affiliate_subid = Column(VARCHAR(255))
+    lead_quality_score = Column(Float(6))
+    lead_comment = Column(VARCHAR(1000))
+    lead_legs = Column(Integer)
+    lead_timestamp = Column(TIMESTAMP(fsp=6), server_default=text("CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)"))
 
 
 class TRole(Base):
@@ -98,22 +122,16 @@ class TVertical(Base):
     vertical_name = Column(VARCHAR(255))
 
 
-class TAffiliate(Base):
-    __tablename__ = 'T_affiliate'
+class TAdditoinalfield(Base):
+    __tablename__ = 'T_additoinalfield'
     __table_args__ = {'schema': 'db_marketplace'}
 
-    affiliate_id = Column(Integer, primary_key=True)
-    affiliate_shortname = Column(VARCHAR(255), nullable=False)
-    affiliate_company_id = Column(ForeignKey('db_marketplace.T_company.company_id'), index=True)
-    affiliate_api_key = Column(VARCHAR(255))
-    affiliate_api_password = Column(VARCHAR(255), comment='md5')
-    affiliate_enable = Column(ForeignKey('db_marketplace.T_bizdev.bizdev_id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
-    affiliate_bizdev_id = Column(Integer, index=True)
-    affiliate_test = Column(Integer)
-    affiliate_partnerid_AAC = Column(VARCHAR(255))
+    additoinalfield_lead_id = Column(ForeignKey('db_marketplace.T_lead.lead_id'), primary_key=True, nullable=False)
+    additoinalfield_fieldname = Column(VARCHAR(255), primary_key=True, nullable=False)
+    additoinalfield_value = Column(VARCHAR(5000))
+    additoinalfield_timestamp = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
 
-    affiliate_company = relationship('TCompany')
-    T_bizdev = relationship('TBizdev')
+    additoinalfield_lead = relationship('TLead')
 
 
 class TCategory(Base):
@@ -144,23 +162,6 @@ class TContact(Base):
     T_city = relationship('TCity')
 
 
-class TCustomer(Base):
-    __tablename__ = 'T_customer'
-    __table_args__ = {'schema': 'db_marketplace'}
-
-    customer_id = Column(Integer, primary_key=True)
-    customer_shortname = Column(VARCHAR(255))
-    customer_company_id = Column(ForeignKey('db_marketplace.T_company.company_id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
-    customer_enable = Column(Integer)
-    customer_test = Column(Integer)
-    customer_bizdev_id = Column(ForeignKey('db_marketplace.T_bizdev.bizdev_id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
-    customer_critera = Column(JSON)
-    customer_numclient_AAC = Column(Integer)
-
-    customer_bizdev = relationship('TBizdev')
-    customer_company = relationship('TCompany')
-
-
 class TUser(Base):
     __tablename__ = 'T_user'
     __table_args__ = {'schema': 'db_marketplace'}
@@ -176,26 +177,39 @@ class TUser(Base):
     user_role = relationship('TRole')
 
 
-
-
-class TLead(Base):
-    __tablename__ = 'T_lead'
+class DeleteTAffiliate(Base):
+    __tablename__ = 'delete_T_affiliate'
     __table_args__ = {'schema': 'db_marketplace'}
 
-    lead_id = Column(Integer, primary_key=True)
-    lead_category_id = Column(ForeignKey('db_marketplace.T_category.category_id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
-    lead_affiliate_id = Column(ForeignKey('db_marketplace.T_affiliate.affiliate_id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
-    lead_contact_id = Column(ForeignKey('db_marketplace.T_contact.contact_id'), index=True)
-    lead_partner_leadid = Column(VARCHAR(255))
-    lead_affiliate_subid = Column(VARCHAR(255))
-    lead_quality_score = Column(Float(6))
-    lead_comment = Column(VARCHAR(1000))
-    lead_legs = Column(Integer)
-    lead_timestamp = Column(TIMESTAMP(fsp=6), server_default=text("CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)"))
+    affiliate_id = Column(Integer, primary_key=True)
+    affiliate_shortname = Column(VARCHAR(255), nullable=False)
+    affiliate_company_id = Column(ForeignKey('db_marketplace.T_company.company_id'), index=True)
+    affiliate_api_key = Column(VARCHAR(255))
+    affiliate_api_password = Column(VARCHAR(255), comment='md5')
+    affiliate_enable = Column(ForeignKey('db_marketplace.T_bizdev.bizdev_id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
+    affiliate_bizdev_id = Column(Integer, index=True)
+    affiliate_test = Column(Integer)
+    affiliate_partnerid_AAC = Column(VARCHAR(255))
 
-    lead_affiliate = relationship('TAffiliate')
-    lead_category = relationship('TCategory')
-    lead_contact = relationship('TContact')
+    affiliate_company = relationship('TCompany')
+    T_bizdev = relationship('TBizdev')
+
+
+class DeleteTCustomer(Base):
+    __tablename__ = 'delete_T_customer'
+    __table_args__ = {'schema': 'db_marketplace'}
+
+    customer_id = Column(Integer, primary_key=True)
+    customer_shortname = Column(VARCHAR(255))
+    customer_company_id = Column(ForeignKey('db_marketplace.T_company.company_id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
+    customer_enable = Column(Integer)
+    customer_test = Column(Integer)
+    customer_bizdev_id = Column(ForeignKey('db_marketplace.T_bizdev.bizdev_id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
+    customer_critera = Column(JSON)
+    customer_numclient_AAC = Column(Integer)
+
+    customer_bizdev = relationship('TBizdev')
+    customer_company = relationship('TCompany')
 
 
 class TModelcat(Base):
@@ -228,18 +242,6 @@ class TSearch(Base):
     search_filter_files = Column(VARCHAR(3000))
 
     search_user = relationship('TUser')
-
-
-class TAdditoinalfield(Base):
-    __tablename__ = 'T_additoinalfield'
-    __table_args__ = {'schema': 'db_marketplace'}
-
-    additoinalfield_lead_id = Column(ForeignKey('db_marketplace.T_lead.lead_id'), primary_key=True, nullable=False)
-    additoinalfield_fieldname = Column(VARCHAR(255), primary_key=True, nullable=False)
-    additoinalfield_value = Column(VARCHAR(5000))
-    additoinalfield_timestamp = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
-
-    additoinalfield_lead = relationship('TLead')
 
 
 class TOrder(Base):

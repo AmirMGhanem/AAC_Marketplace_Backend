@@ -10,6 +10,7 @@ def api_calls_middleware(app: FastAPI):
     @app.middleware("http")
     async def middleware(request: Request, call_next):
         ip = request.client.host
+        # TODO : Get the ip address of the user
         if request.headers.get("Authorization"):
             token = request.headers.get("Authorization")
             user = decode_token(token)
