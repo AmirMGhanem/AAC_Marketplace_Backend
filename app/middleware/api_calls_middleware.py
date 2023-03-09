@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from starlette.requests import Request
-from ..settings import mylogger
+from ..mylogger import mylogger
 from ..utils.generate import decode_token
 
 

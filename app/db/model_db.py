@@ -7,6 +7,16 @@ Base = declarative_base()
 metadata = Base.metadata
 
 
+class TAnswer(Base):
+    __tablename__ = 'T_answer'
+    __table_args__ = {'schema': 'db_marketplace'}
+
+    answer_id = Column(Integer, primary_key=True)
+    answer_verticalfield_id = Column(Integer, nullable=False)
+    answer_verticalfield_choice = Column(VARCHAR(255), nullable=False)
+    answer_verticalfield_answer = Column(String(255, 'utf8mb3_unicode_ci'))
+
+
 class TBizdev(Base):
     __tablename__ = 'T_bizdev'
     __table_args__ = {'schema': 'db_marketplace'}
@@ -69,15 +79,6 @@ class TCompany(Base):
     company_AAC_numclient = Column(VARCHAR(255))
 
 
-t_T_groupcat = Table(
-    'T_groupcat', metadata,
-    Column('groupcat_id', INTEGER, nullable=False, unique=True),
-    Column('groupcat_name', VARCHAR(100)),
-    Column('groupcat_enable', TINYINT, server_default=text("'1'")),
-    schema='db_marketplace'
-)
-
-
 class TLead(Base):
     __tablename__ = 'T_lead'
     __table_args__ = {'schema': 'db_marketplace'}
@@ -85,13 +86,22 @@ class TLead(Base):
     lead_id = Column(Integer, primary_key=True)
     lead_category_id = Column(Integer, index=True)
     lead_company_id = Column(Integer, index=True)
-    lead_contact_id = Column(Integer, index=True)
     lead_partner_leadid = Column(VARCHAR(255))
-    lead_affiliate_subid = Column(VARCHAR(255))
+    lead_company_subid = Column(VARCHAR(255))
     lead_quality_score = Column(Float(6))
     lead_comment = Column(VARCHAR(1000))
     lead_legs = Column(Integer)
     lead_timestamp = Column(TIMESTAMP(fsp=6), server_default=text("CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)"))
+    lead_ip = Column(DateTime)
+    lead_trustedform = Column(String(255, 'utf8mb3_unicode_ci'))
+    lead_ULI = Column(String(255, 'utf8mb3_unicode_ci'))
+    lead_lastname = Column(String(255, 'utf8mb3_unicode_ci'))
+    lead_firstname = Column(String(255, 'utf8mb3_unicode_ci'))
+    lead_email = Column(String(255, 'utf8mb3_unicode_ci'))
+    lead_phone = Column(String(255, 'utf8mb3_unicode_ci'))
+    lead_address = Column(String(255, 'utf8mb3_unicode_ci'))
+    lead_zipcode = Column(Integer)
+    lead_gender = Column(Integer)
 
 
 class TRole(Base):
@@ -122,6 +132,29 @@ class TVertical(Base):
     vertical_name = Column(VARCHAR(255))
 
 
+class TVerticalfield(Base):
+    __tablename__ = 'T_verticalfield'
+    __table_args__ = {'schema': 'db_marketplace'}
+
+    verticalfields_id = Column(Integer, primary_key=True)
+    verticalfields_vertical_id = Column(Integer)
+    verticalfields_fieldname = Column(VARCHAR(50))
+    verticalfields_field_sql = Column(VARCHAR(100))
+    verticalfields_example = Column(VARCHAR(50))
+    verticalfields_pattern = Column(LONGTEXT)
+    verticalfields_description = Column(VARCHAR(500))
+    verticalfields_mandatory = Column(Integer)
+
+
+t__________________T_groupcat = Table(
+    '_________________T_groupcat', metadata,
+    Column('groupcat_id', INTEGER, nullable=False, unique=True),
+    Column('groupcat_name', VARCHAR(100)),
+    Column('groupcat_enable', TINYINT, server_default=text("'1'")),
+    schema='db_marketplace'
+)
+
+
 class TAdditoinalfield(Base):
     __tablename__ = 'T_additoinalfield'
     __table_args__ = {'schema': 'db_marketplace'}
@@ -147,21 +180,6 @@ class TCategory(Base):
     category_vertical = relationship('TVertical')
 
 
-class TContact(Base):
-    __tablename__ = 'T_contact'
-    __table_args__ = {'schema': 'db_marketplace'}
-
-    contact_id = Column(Integer, primary_key=True)
-    contact_lastname = Column(VARCHAR(255))
-    contact_firstname = Column(VARCHAR(255))
-    contact_email = Column(VARCHAR(255))
-    contact_phone = Column(VARCHAR(255))
-    contact_address = Column(VARCHAR(255))
-    contact_zipcode = Column(ForeignKey('db_marketplace.T_city.city_zipcode'), index=True)
-
-    T_city = relationship('TCity')
-
-
 class TUser(Base):
     __tablename__ = 'T_user'
     __table_args__ = {'schema': 'db_marketplace'}
@@ -177,8 +195,8 @@ class TUser(Base):
     user_role = relationship('TRole')
 
 
-class DeleteTAffiliate(Base):
-    __tablename__ = 'delete_T_affiliate'
+class TAffiliate(Base):
+    __tablename__ = '_________________T_affiliate'
     __table_args__ = {'schema': 'db_marketplace'}
 
     affiliate_id = Column(Integer, primary_key=True)
@@ -195,8 +213,23 @@ class DeleteTAffiliate(Base):
     T_bizdev = relationship('TBizdev')
 
 
-class DeleteTCustomer(Base):
-    __tablename__ = 'delete_T_customer'
+class TContact(Base):
+    __tablename__ = '_________________T_contact'
+    __table_args__ = {'schema': 'db_marketplace'}
+
+    contact_id = Column(Integer, primary_key=True)
+    contact_lastname = Column(VARCHAR(255))
+    contact_firstname = Column(VARCHAR(255))
+    contact_email = Column(VARCHAR(255))
+    contact_phone = Column(VARCHAR(255))
+    contact_address = Column(VARCHAR(255))
+    contact_zipcode = Column(ForeignKey('db_marketplace.T_city.city_zipcode'), index=True)
+
+    T_city = relationship('TCity')
+
+
+class TCustomer(Base):
+    __tablename__ = '_________________T_customer'
     __table_args__ = {'schema': 'db_marketplace'}
 
     customer_id = Column(Integer, primary_key=True)
@@ -212,23 +245,6 @@ class DeleteTCustomer(Base):
     customer_company = relationship('TCompany')
 
 
-class TModelcat(Base):
-    __tablename__ = 'T_modelcat'
-    __table_args__ = {'schema': 'db_marketplace'}
-
-    modelcat_id = Column(Integer, nullable=False, unique=True)
-    modelcat_category_id = Column(ForeignKey('db_marketplace.T_category.category_vertical_id'), primary_key=True, nullable=False)
-    modelcat_fieldname = Column(VARCHAR(50), primary_key=True, nullable=False)
-    modelcat_field_sql = Column(VARCHAR(100), nullable=False)
-    modelcat_fieldmaster = Column(VARCHAR(50))
-    modelcat_pattern = Column(LONGTEXT, nullable=False)
-    modelcat_description = Column(VARCHAR(500))
-    ping_required = Column(VARCHAR(5), nullable=False)
-    post_required = Column(VARCHAR(5), nullable=False)
-
-    modelcat_category = relationship('TCategory')
-
-
 class TSearch(Base):
     __tablename__ = 'T_search'
     __table_args__ = {'schema': 'db_marketplace'}
@@ -242,6 +258,23 @@ class TSearch(Base):
     search_filter_files = Column(VARCHAR(3000))
 
     search_user = relationship('TUser')
+
+
+class TModelcat(Base):
+    __tablename__ = '_________________T_modelcat'
+    __table_args__ = {'schema': 'db_marketplace'}
+
+    modelcat_id = Column(Integer, nullable=False, unique=True)
+    modelcat_category_id = Column(ForeignKey('db_marketplace.T_category.category_vertical_id'), primary_key=True, nullable=False)
+    modelcat_fieldname = Column(VARCHAR(50), primary_key=True, nullable=False)
+    modelcat_field_sql = Column(VARCHAR(100), nullable=False)
+    modelcat_fieldmaster = Column(VARCHAR(50))
+    modelcat_pattern = Column(LONGTEXT, nullable=False)
+    modelcat_description = Column(VARCHAR(500))
+    ping_required = Column(VARCHAR(5), nullable=False)
+    post_required = Column(VARCHAR(5), nullable=False)
+
+    modelcat_category = relationship('TCategory')
 
 
 class TOrder(Base):
