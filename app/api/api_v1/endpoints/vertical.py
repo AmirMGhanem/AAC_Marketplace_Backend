@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
@@ -8,11 +7,8 @@ from app.api.api_v1.models.vertical import Vertical,VerticalFields
 from app.db.session import get_db
 from app.api.api_v1.crud.vertical import get_verticals,get_vertical_fields
 
-
 router = APIRouter()
 db= get_db()
-
-
 
 @router.get("/get_all", response_model=List[Vertical])
 def get_all_verticals(db: Session = Depends(get_db)):

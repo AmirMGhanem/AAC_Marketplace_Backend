@@ -32,6 +32,11 @@ def random_username(name):
     return name
 
 
+def random_id(min,max):
+    id=random.randint(min,max)
+    return id
+
+
 def random_otp():
     otp=""
     for i in range(6):

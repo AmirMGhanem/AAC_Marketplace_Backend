@@ -10,7 +10,6 @@ metadata = Base.metadata
 class TAnswer(Base):
     __tablename__ = 'T_answer'
     __table_args__ = {'schema': 'db_marketplace'}
-
     answer_id = Column(Integer, primary_key=True)
     answer_verticalfield_id = Column(Integer, nullable=False)
     answer_verticalfield_choice = Column(VARCHAR(255), nullable=False)
