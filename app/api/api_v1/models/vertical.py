@@ -30,6 +30,7 @@ class VerticalFieldsWithAnswers(BaseModel):
     verticalfields_fieldname: Optional[str]
     verticalfields_pattern: Optional[str]
     verticalfields_mandatory: Optional[int]
+    verticalfields_example: Optional[str]
     answers: Optional[List[Answers]]
 
     class Config:

@@ -14,14 +14,18 @@
     ],
     "firstname": [
         "SourceFirstName",
-        "SourceFirstName2"
+        "SourceFirstName2",
+        "f_name",
+        "ZipCode"
     ],
     "lastname": [
         "SourceLastName",
-        "SourceLastName2"
+        "SourceLastName2",
+        "lname"
     ],
     "address": [
-        "AddressLine"
+        "AddressLine",
+        "IsHomeOwner"
     ],
     "zipcode": [
         "ZipCode"
@@ -67,7 +71,9 @@
         ""
     ],
     "height": [],
-    "weight": [],
+    "weight": [
+        "SourceSelfCredit"
+    ],
     "have_preexisting_medical_conditions": [],
     "requested_coverage_types": [],
     "currently_insured": [],

@@ -1,8 +1,6 @@
 from sys import stderr
 
 import spacy
-
-
 def find_best_score_similarity(text, list_of_text):
     if not text or not list_of_text or len(list_of_text) == 0:
         return None
@@ -26,5 +24,3 @@ def find_best_score_similarity(text, list_of_text):
             best_match = token.text
 
     return best_match
-
-find_best_score_similarity("SourceWorkPhone", ["SourceWorkPhone","SourceWorkPhone1","SourceWorkP","SourceWorkPhone123412"])

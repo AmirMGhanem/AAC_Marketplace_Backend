@@ -10,5 +10,6 @@ class Answers(BaseModel):
     answer_verticalfield_choice: Optional[str]
     answer_verticalfield_answer: Optional[str]
 
+
     class Config:
         orm_mode = True
