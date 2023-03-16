@@ -13,7 +13,7 @@ import uvicorn
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title=get_settings().PROJECT_NAME)
+app = FastAPI(title=get_settings().PROJECT_NAME,debug=True)
 origins = [
     "http://localhost",
     "http://localhost:8080",
@@ -34,7 +34,7 @@ app.add_middleware(
 
 
 # add middleware function to app
-api_calls_middleware(app)
+# api_calls_middleware(app)
 
 
 

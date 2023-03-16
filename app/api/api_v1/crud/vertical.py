@@ -13,3 +13,18 @@ def get_vertical(db: Session, vertical_id: int):
 def get_vertical_fields(db: Session, vertical_id: int):
     return db.query(TVerticalfield).filter((TVerticalfield.verticalfields_vertical_id == vertical_id) | (
                 TVerticalfield.verticalfields_vertical_id == 0)).all()
+
+
+
+def get_vertical_fields_with_answers(db: Session, vertical_id: int):
+    result= db.query(TVerticalfield).filter((TVerticalfield.verticalfields_vertical_id == vertical_id) | (TVerticalfield.verticalfields_vertical_id == 0)).all()
+    return result
+
+
+def get_vertical_fields_with_answers_only(db: Session):
+    result= db.query(TVerticalfield).all()
+    result = list(filter(lambda x: x if len(x.answers)>0 else None, result))
+    result = list(map(lambda x: x.verticalfields_fieldname, result))
+    return result
+
+

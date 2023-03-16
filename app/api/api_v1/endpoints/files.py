@@ -1,14 +1,19 @@
+import json
 
-from fastapi import APIRouter, File, UploadFile,BackgroundTasks
+from fastapi import APIRouter, File, UploadFile, BackgroundTasks, Depends
+from sqlalchemy.orm import Session
+
+from app.api.api_v1.crud.vertical import get_vertical_fields_with_answers_only
 from app.mylogger import mylogger
+from app.utils.NLP import find_best_score_similarity
 from app.utils.files import save_file
 from app.utils.generate import random_id
 import os
-import csv
-
+import pandas as pd
+import numpy as np
+from app.db.session import get_db
 
 logger = mylogger(__name__)
-from app.db.session import get_db
 
 router = APIRouter()
 db= get_db()
@@ -17,27 +22,51 @@ db= get_db()
 def create_upload_file(background_tasks: BackgroundTasks,file: UploadFile = File(...)):
     id=random_id(100,9999)
     background_tasks.add_task(save_file,id,file)
-    return {"filename": file.filename, "id": id}
+    # fetch first line of the file
+    df = pd.read_csv(file.file, nrows=1)
+    predicted_fields={}
+    generic_mapper_path=os.path.join(os.getcwd(),"app",  "assets", "files","fields_map", "generic_fields_map.json")
+    with open(generic_mapper_path,"r") as f:
+        generic_mapper = json.load(f)
+        for col in df.columns:
+            key=find_best_score_similarity(col, generic_mapper.keys())
+            predicted_fields[key]=col
+            for key in generic_mapper:
+                if col in generic_mapper[key]:
+                    predicted_fields[key]=col
 
-@router.get("/fields_values/{id}")
-def read_fields_values(id: int):
-    filename = str(id) + ".csv"
+            print(predicted_fields)
+    return {"filename": file.filename, "id": id, "predicted_fields": predicted_fields}
+
+@router.post("/fields_values")
+def read_fields_values(payload:dict,db: Session = Depends(get_db)):
+    unique_values = {}
+    file_id=payload['file_id']
+    mapped_headers=payload['data']
+    filename = str(file_id) + ".csv"
     file_path = os.path.join(os.getcwd(), "app", "assets", "files", filename)
-    with open(file_path, "r") as f:
-        reader = csv.DictReader(f)
-        rows = []
-        keys = set()  # Use a set to store unique keys
-        new_row = {}
-        for row in reader:
-            rows.append(row)
+    df = pd.read_csv(file_path)
+    result = get_vertical_fields_with_answers_only(db)
+    print("result",result)
+    mapped_values = {}
+    generic_mapper_path=os.path.join(os.getcwd(), "app", "assets", "files","fields_map", "generic_fields_map.json")
+    with open(generic_mapper_path, 'r+') as f:
+        json_data = json.load(f)
+        for key, value in mapped_headers.items():
+            if value not in json_data[key] and value != "" and value is not None:
+                json_data[key].append(value)
+                f.seek(0)
+                json.dump(json_data, f, indent=4)
+                f.truncate()
 
-        for row in rows:
-            for key in row:
-                if key not in keys:
-                    keys.add(key)
-                    new_row[key] = set()
-                new_row[key].add(row[key])
-
-        return new_row
+            if key in result and value is not None and value != "":
+                mapped_values[key] = value
+        print(mapped_values)
+        for column in df.columns:
+                if column in mapped_values.values():
+                    key = list(mapped_values.keys())[list(mapped_values.values()).index(column)]
+                    unique_values[column] = np.unique(df[column].dropna().values).tolist()
+        f.close()
+    return unique_values
 
 

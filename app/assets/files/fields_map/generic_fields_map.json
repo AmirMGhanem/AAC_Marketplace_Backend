@@ -1,0 +1,80 @@
+{
+    "gender": [
+        "Gender"
+    ],
+    "ownership": [
+        "IsHomeOwner"
+    ],
+    "email": [
+        "SourceEmail"
+    ],
+    "phone": [
+        "SourceWorkPhone",
+        "SourceWorkPhone2"
+    ],
+    "firstname": [
+        "SourceFirstName",
+        "SourceFirstName2"
+    ],
+    "lastname": [
+        "SourceLastName",
+        "SourceLastName2"
+    ],
+    "address": [
+        "AddressLine"
+    ],
+    "zipcode": [
+        "ZipCode"
+    ],
+    "ip": [
+        ""
+    ],
+    "date": [
+        "DOB"
+    ],
+    "universal_leadid": [
+        ""
+    ],
+    "trusted_form_token": [
+        ""
+    ],
+    "average_monthly_electricity_bill": [],
+    "electricity_service_provider": [],
+    "roof_shade": [],
+    "vehicle_year": [
+        ""
+    ],
+    "vehicle_make": [
+        ""
+    ],
+    "vehicle_model": [
+        ""
+    ],
+    "vehicle_submodel": [
+        ""
+    ],
+    "vehicle_ownership": [
+        ""
+    ],
+    "current_policy_insurance_company": [
+        ""
+    ],
+    "coverage_amount": [],
+    "coverage_duration": [],
+    "years_at_current_residence": [],
+    "tobacco": [],
+    "birth_date": [
+        ""
+    ],
+    "height": [],
+    "weight": [],
+    "have_preexisting_medical_conditions": [],
+    "requested_coverage_types": [],
+    "currently_insured": [],
+    "insurance_company": [],
+    "have_diabetes": [],
+    "home_value": [],
+    "incident_timeframe": [],
+    "spoke_to_attorney": [],
+    "was_it_your_fault": []
+}
